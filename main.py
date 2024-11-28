@@ -1,79 +1,77 @@
 # Imports
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QLineEdit
 
+class CalcApp(QWidget):
 # Add Settings
-app = QApplication()
-main_window = QWidget()
-main_window.setWindowTitle("Calculator")
-main_window.resize(250, 300)
+    def __init__(self):
+        super().__init__()  # Call the __init__ method of the superclass (QWidget) to initialize the base window
+        self.setWindowTitle("Calculator")
+        self.resize(250, 300)
 
-# All objects
-text_box = QLineEdit()
-grid = QGridLayout()
+    # All objects
+        self.text_box = QLineEdit()
+        self.grid = QGridLayout()
 
-buttons = {
-    "7", "8",  "9",  "/",
-    "4",  "5",  "6",  "*",
-    "1",  "2",  "3", "-",
-    "8",  ".",  "=",  "+",
-}
-
-clear = QPushButton("Clear")
-delete = QPushButton("<")
-
-#function
-def button_click():
-    button = app.sender()
-    text = button.text()
-
-    if text == "=":
-        symbol = text_box.text() #gets the current text from the QLineEdit widget. If the user has typed 3+5, symbol will contain the string "3+5".
-        try:
-            res = eval(symbol)  # eval() in the button_click() function allows evaluate the mathematical expression
-            text_box.setText(str(res))  # widget expects a string as its input.
-        except Exception as e:
-            print("Error", e)
-
-    elif text == "Clear":
-        text_box.clear()
-
-    elif text == "<":
-        current_value = text_box.text()
-        text_box.setText(current_value[:-1])
-
-    else:
-        current_value = text_box.text()
-        text_box.setText(current_value + text)
-
-
-
-row = 0
-col = 0
-for text in buttons:
-    button = QPushButton(text)
-    button.clicked.connect(button_click)
-    grid.addWidget(button, row, col)
-    col += 1
-    if col > 3:
+        self.buttons = {
+            "7", "8",  "9",  "/",
+            "4",  "5",  "6",  "*",
+            "1",  "2",  "3", "-",
+            "8",  ".",  "=",  "+",
+        }
+        row = 0
         col = 0
-        row += 1
+        for text in self.buttons:
+            button = QPushButton(text)
+            button.clicked.connect(self.button_click)  # Connect the button to the event handler method
+            self.grid.addWidget(button, row, col) # Add the button to the grid at the current row and column
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
 
+        self.clear = QPushButton("Clear")
+        self.delete = QPushButton("<")
+        # Design
+        master_layout = QVBoxLayout()
+        master_layout.addWidget(self.text_box)
+        master_layout.addLayout(self.grid)
 
-# Design
-master_layout = QVBoxLayout()
-master_layout.addWidget(text_box)
-master_layout.addLayout(grid)
+        button_row = QHBoxLayout()
+        button_row.addWidget(self.clear)
+        button_row.addWidget(self.delete)
+        master_layout.addLayout(button_row)
 
-button_row = QHBoxLayout()
-button_row.addWidget(clear)
-button_row.addWidget(delete)
-master_layout.addLayout(button_row)
+        self.setLayout(master_layout)
 
-main_window.setLayout(master_layout)
+        self.clear.clicked.connect(self.button_click)
+        self.delete.clicked.connect(self.button_click)
 
-clear.clicked.connect(button_click)
-delete.clicked.connect(button_click)
+#function  # Define the event handler for button clicks
+    def button_click(self):
+        button = app.sender() # Retrieves the button that triggered the event.
+        text = button.text()
 
-# Show/Run
-main_window.show()
-app.exec_()
+        if text == "=":
+            symbol = self.text_box.text() #gets the current text from the QLineEdit widget. If the user has typed 3+5, symbol will contain the string "3+5".
+            try:
+                res = eval(symbol)  # eval() in the button_click() function allows evaluate the mathematical expression
+                self.text_box.setText(str(res))  # widget expects a string as its input.
+            except Exception as e:
+                print("Error", e)
+
+        elif text == "Clear":
+            self.text_box.clear()
+
+        elif text == "<":
+            current_value = self.text_box.text()
+            self.text_box.setText(current_value[:-1])
+
+        else:
+            current_value = self.text_box.text()
+            self.text_box.setText(current_value + text)
+
+if __name__ == "__main__":
+    app = QApplication([]) # Create a PyQt5 application
+    main_window = CalcApp() # Create an instance of the CalcApp class
+    main_window.show()
+    app.exec_()
