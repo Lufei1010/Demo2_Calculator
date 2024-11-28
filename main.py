@@ -1,5 +1,7 @@
 # Imports
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QLineEdit
+from PyQt5.QtGui import QFont
+
 
 class CalcApp(QWidget):
 # Add Settings
@@ -10,19 +12,23 @@ class CalcApp(QWidget):
 
     # All objects
         self.text_box = QLineEdit()
+        self.text_box.setFont(QFont("Helvetica", 32))
+        self.text_box.setStyleSheet("QLineEdit { color: black; }")
+
         self.grid = QGridLayout()
 
-        self.buttons = {
-            "7", "8",  "9",  "/",
-            "4",  "5",  "6",  "*",
-            "1",  "2",  "3", "-",
-            "8",  ".",  "=",  "+",
-        }
+        self.buttons = [
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+",
+        ]
         row = 0
         col = 0
         for text in self.buttons:
             button = QPushButton(text)
             button.clicked.connect(self.button_click)  # Connect the button to the event handler method
+            button.setStyleSheet("QPushButton { font: 25pt Comic Sans MS; color: black; padding: 10px}") #similar to CSS
             self.grid.addWidget(button, row, col) # Add the button to the grid at the current row and column
             col += 1
             if col > 3:
@@ -31,6 +37,8 @@ class CalcApp(QWidget):
 
         self.clear = QPushButton("Clear")
         self.delete = QPushButton("<")
+        self.clear.setStyleSheet("QPushButton { font: 25pt Comic Sans MS; color: black; padding: 10px}")
+        self.delete.setStyleSheet("QPushButton { font: 25pt Comic Sans MS; color: black; padding: 10px}")
         # Design
         master_layout = QVBoxLayout()
         master_layout.addWidget(self.text_box)
@@ -40,6 +48,7 @@ class CalcApp(QWidget):
         button_row.addWidget(self.clear)
         button_row.addWidget(self.delete)
         master_layout.addLayout(button_row)
+        master_layout.setContentsMargins(25, 25, 25, 25)
 
         self.setLayout(master_layout)
 
@@ -73,5 +82,6 @@ class CalcApp(QWidget):
 if __name__ == "__main__":
     app = QApplication([]) # Create a PyQt5 application
     main_window = CalcApp() # Create an instance of the CalcApp class
+    main_window.setStyleSheet("QWidget { background-color: #f0f0f8 } ")
     main_window.show()
     app.exec_()
